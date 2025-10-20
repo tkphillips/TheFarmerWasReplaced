@@ -4,7 +4,7 @@ from sort import *
 
 reset()
 
-FarmType = "Maze"
+FarmType = "Cactus"
 
 if FarmType == "Default":
 	while True:
@@ -21,11 +21,10 @@ if FarmType == "Default":
 
 if FarmType == "PumpkinOpt":
 	#Spawn planters
-	spawn_drone(partitioned_planter_pumpkin)
-	goto_coords(0,11)
-	spawn_drone(partitioned_planter_pumpkin)
-	goto_coords(0,22)
-	spawn_drone(partitioned_planter_pumpkin)
+	inc = 1
+	for i in range(max_drones()-1):
+		goto_coords(0,inc*i)
+		spawn_drone(partitioned_planter_pumpkin)
 	#Run harvest
 	coordList = find_Pumpkin_corners(FarmType,6)
 	pumpkin_harvester(coordList)
@@ -33,24 +32,32 @@ if FarmType == "PumpkinOpt":
 if FarmType == "Cactus":
 	while True:
 		#Plant all Cactai
-		for i in range(get_world_size()):
-			for j in range(get_world_size()):
-				plant_cactus()
-				move(East)
-			move(North)
+		for_all(plant_cactus)
+		goto_coords(0,0)
 		#Sort all Cactus
-		for i in range(get_world_size()):
-			bubble_sort_x()
+		for i in range(get_world_size()-1):
+			spawn_drone(bubble_sort_x)
 			move(North)
-		for i in range(get_world_size()):
-			bubble_sort_y()
+		bubble_sort_x()
+		while num_drones() > 1:
+			pass
+		move(North)
+		for i in range(get_world_size()-1):
+			spawn_drone(bubble_sort_y)
 			move(East)
+		bubble_sort_y()
+		while num_drones() > 1:
+			pass
+		move(East)
 		goto_top()
 		harvest()
 		move(North)
 
 if FarmType == "Maze":
-	while True:
-		init_maze(16)
-		treasure_hunt_right_hand()
-		clear()
+	size = 5
+	for i in range(4):
+		for j in range(4):
+			goto_coords(2*size*(i),2*size*(j))
+			spawn_drone(make_and_solve_maze)
+	goto_coords(28,28)
+	make_and_solve_maze()

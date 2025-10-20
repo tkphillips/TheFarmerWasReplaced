@@ -1,3 +1,5 @@
+from plant import *
+
 def zero_x():
 	while get_pos_x() > 0:
 		move(West)
@@ -58,3 +60,22 @@ def treasure_hunt_right_hand():
 		if get_entity_type()==Entities.Treasure:
 			harvest()
 			break
+
+def init_maze(size):
+	plant(Entities.Bush)
+	substance = size * 2**(num_unlocked(Unlocks.Mazes) - 1)
+	use_item(Items.Weird_Substance, substance)
+
+def make_and_solve_maze():
+	init_x = get_pos_x()
+	init_y = get_pos_y()
+	#wait for drone to leave maze
+	while get_tick_count() < 10000:
+		pass
+	while True:
+		while init_x != get_pos_x() and init_y != get_pos_y():
+			pass
+		init_maze(5)
+		treasure_hunt_right_hand()
+		harvest()
+		goto_coords(init_x,init_y)

@@ -16,10 +16,16 @@ def plant_cactus():
 		till()
 	plant(Entities.Cactus)
 
-def init_maze(size):
-	plant(Entities.Bush)
-	substance = size * 2**(num_unlocked(Unlocks.Mazes) - 1)
-	use_item(Items.Weird_Substance, substance)
+def for_all(f):
+	def row():
+		for _ in range(get_world_size()-1):
+			f()
+			move(East)
+		f()
+	for _ in range(get_world_size()):
+		if not spawn_drone(row):
+			row()
+		move(North)
 
 def goto_coords(x,y):
 	current_x = get_pos_x()
